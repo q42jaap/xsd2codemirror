@@ -7,9 +7,12 @@ using System.Text;
 
 namespace SimpleSchemaParser
 {
-  public static class CodeMirrorSchemaInfoSerializer
+  public class CodeMirrorSchemaInfoSerializer
   {
-
+    private readonly IEnumerable<SimpleXmlElement> elements;
+    private JsonTextWriter writer;
+    public bool Pretty { get; set; }
+    
     /*
      * {
         "!top": ["top"],
@@ -36,18 +39,30 @@ namespace SimpleSchemaParser
       }
      */
 
-    public static string ToJsonString(IEnumerable<SimpleXmlElement> elements, bool pretty = true)
+    public CodeMirrorSchemaInfoSerializer(IEnumerable<SimpleXmlElement> elements)
+    {
+      this.elements = elements;
+    }
+
+    public void SetPrefix(string @namespace, string prefix)
+    {
+      NamespacePrefixes[@namespace] = prefix;
+    }
+
+    private Dictionary<string, string> NamespacePrefixes = new Dictionary<string, string>();
+
+    public string ToJsonString()
     {
       using (var buffer = new StringWriter())
       {
-        using (var writer = new JsonTextWriter(buffer))
+        using (writer = new JsonTextWriter(buffer))
         {
-          writer.Formatting = pretty ? Formatting.Indented : Formatting.None;
+          writer.Formatting = Pretty ? Formatting.Indented : Formatting.None;
           writer.WriteStartObject();
-          WriteTopElements(writer, elements.Where(e => e.IsTopLevelElement));
+          WriteTopElements(elements.Where(e => e.IsTopLevelElement));
           foreach (var element in elements)
           {
-            WriteElement(writer, element);
+            WriteElement(element);
           }
           writer.WriteEndObject();
         }
@@ -55,27 +70,56 @@ namespace SimpleSchemaParser
       }
     }
 
-    private static void WriteTopElements(JsonTextWriter writer, IEnumerable<SimpleXmlElement> elements)
+    private string ToElementName(SimpleXmlElement element)
+    {
+      if (string.IsNullOrEmpty(element.Namespace))
+        return element.Name;
+      return string.Format("{0}:{1}", GetPrefix(element.Namespace), element.Name);
+    }
+
+    private string ToElementName(SimpleXmlElementRef elementRef)
+    {
+      if (string.IsNullOrEmpty(elementRef.Namespace))
+        return elementRef.Name;
+      return string.Format("{0}:{1}", GetPrefix(elementRef.Namespace), elementRef.Name);
+    }
+
+    private int nsCounter = 0;
+    private string GetPrefix(string ns)
+    {
+      string prefix;
+      if (!NamespacePrefixes.TryGetValue(ns, out prefix))
+      {
+        prefix = "cmns" + nsCounter;
+        nsCounter++;
+        NamespacePrefixes.Add(ns, prefix);
+      }
+
+      return prefix;
+    }
+
+    private void WriteTopElements(IEnumerable<SimpleXmlElement> elements)
     {
       if (!elements.Any()) return;
       writer.WritePropertyName("!top");
       writer.WriteStartArray();
       foreach (var element in elements)
       {
-        writer.WriteValue(element.Name);
+        writer.WriteValue(ToElementName(element));
       }
       writer.WriteEndArray();
     }
 
-    private static void WriteElement(JsonTextWriter writer, SimpleXmlElement element)
+    private void WriteElement(SimpleXmlElement element)
     {
-      writer.WritePropertyName(element.Name);
+      writer.WritePropertyName(ToElementName(element));
       writer.WriteStartObject();
       if (element.Attributes != null && element.Attributes.Any())
       {
         writer.WritePropertyName("attrs");
         writer.WriteStartObject();
-        foreach (var attribute in element.Attributes) {
+        foreach (var attribute in element.Attributes)
+        {
           writer.WritePropertyName(attribute.Name);
           if (attribute.PossibleValues == null || !attribute.PossibleValues.Any())
           {
@@ -100,12 +144,11 @@ namespace SimpleSchemaParser
         writer.WriteStartArray();
         foreach (var child in element.Children)
         {
-          writer.WriteValue(child);
+          writer.WriteValue(ToElementName(child));
         }
         writer.WriteEndArray();
       }
       writer.WriteEndObject();
-
     }
 
   }

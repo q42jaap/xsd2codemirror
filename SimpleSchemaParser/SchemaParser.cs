@@ -95,7 +95,7 @@ namespace SimpleSchemaParser
       foreach (var temp in elements)
       {
         if (temp.Value.children != null)
-          temp.Value.element.Children = temp.Value.children.children;
+          temp.Value.element.Children = temp.Value.children.children.Select(qn => new SimpleXmlElementRef { Name = qn.Name, Namespace = qn.Namespace }).ToList();
       }
 
       return elements.Values.Select(temp => temp.element);
@@ -109,21 +109,20 @@ namespace SimpleSchemaParser
 
     private Dictionary<XmlSchemaElement, TempXmlElement> elements = new Dictionary<XmlSchemaElement, TempXmlElement>();
 
-    string ParseElement(XmlSchemaElement element, bool isTopLevel = false)
+    XmlQualifiedName ParseElement(XmlSchemaElement element, bool isTopLevel = false)
     {
       log.WriteLine("Found element {0}", element.QualifiedName);
 
       if (element.RefName != null && !element.RefName.IsEmpty)
       {
-        return element.RefName.ToString();
+        return element.RefName;
       }
 
-      var elementRef = element.QualifiedName.ToString();
       TempXmlElement tempXmlElement;
       if (elements.TryGetValue(element, out tempXmlElement))
       {
         // TODO detect real equals or conflict, if conflict merge
-        return elementRef;
+        return element.QualifiedName;
       }
 
       tempXmlElement = new TempXmlElement();
@@ -183,7 +182,7 @@ namespace SimpleSchemaParser
 
       // TODO merge attrs and children on conflicts
 
-      return elementRef;
+      return element.QualifiedName;
 
     }
 
@@ -252,7 +251,7 @@ namespace SimpleSchemaParser
       }
 
       public Dictionary<XmlSchemaGroupBase, RecursiveChildren> dependencies = new Dictionary<XmlSchemaGroupBase, RecursiveChildren>();
-      public List<string> children = new List<string>();
+      public List<XmlQualifiedName> children = new List<XmlQualifiedName>();
       public bool NoDependenciesLeft { get { return dependencies.Count == 0; } }
     }
 
