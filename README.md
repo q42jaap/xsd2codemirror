@@ -9,11 +9,12 @@ configure CodeMirror to use a simple schemaInfo for Ctrl-Space completion.
 
 Usage
 =====
+
     Usage:
     xsd2codemirror.exe [-v] path-to-xsd
 
-ProTip™  
-Pipe the output into a file
+ProTip™: pipe the output into a file:
+
     xsd2codemirror C:\...\ > tags.json
 
 Integration
