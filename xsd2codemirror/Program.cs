@@ -30,13 +30,23 @@ namespace xsd2codemirror
         return;
       }
 
-      var parser = new SchemaParser(argsList[0]);
-      if (verbose)
-        parser.Logger = new ConsoleLogger();
-      parser.Compile();
-      var elements = parser.GetXmlElements();
-      var json = CodeMirrorSchemaInfoSerializer.ToJsonString(elements);
-      Console.WriteLine(json);
+      try
+      {
+        var parser = new SchemaParser(argsList[0]);
+        if (verbose)
+          parser.Logger = new ConsoleLogger();
+        parser.Compile();
+        var elements = parser.GetXmlElements();
+        var json = CodeMirrorSchemaInfoSerializer.ToJsonString(elements);
+        Console.WriteLine(json);
+      }
+      catch (Exception e)
+      {
+        Console.Error.WriteLine(e.GetType().Name);
+        Console.Error.WriteLine(e.Message);
+        Console.Error.WriteLine(e.StackTrace);
+        System.Environment.Exit(1);
+      }
     }
   }
 }
