@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "xsd2codemirror", "xsd2codemirror\xsd2codemirror.csproj", "{455E058F-A510-4EE2-8DEE-00A68707787B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleSchemaParser", "SimpleSchemaParser\SimpleSchemaParser.csproj", "{552F7017-9C50-4633-BFDA-AA44C2C09107}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{455E058F-A510-4EE2-8DEE-00A68707787B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{455E058F-A510-4EE2-8DEE-00A68707787B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{455E058F-A510-4EE2-8DEE-00A68707787B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{455E058F-A510-4EE2-8DEE-00A68707787B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{552F7017-9C50-4633-BFDA-AA44C2C09107}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{552F7017-9C50-4633-BFDA-AA44C2C09107}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{552F7017-9C50-4633-BFDA-AA44C2C09107}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{552F7017-9C50-4633-BFDA-AA44C2C09107}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
