@@ -35,6 +35,8 @@ namespace xsd2codemirror
         parser.Logger = new ConsoleLogger();
       parser.Compile();
       var elements = parser.GetXmlElements();
+      var json = CodeMirrorSchemaInfoSerializer.ToJsonString(elements);
+      Console.WriteLine(json);
     }
   }
 }

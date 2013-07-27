@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>ClassLibrary1.Program</StartupObject>
+    <StartupObject>xsd2codemirror.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
