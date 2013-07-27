@@ -12,7 +12,7 @@ Usage
     Usage:
     xsd2codemirror.exe [-v] path-to-xsd
 
-ProTip�  
+ProTip™  
 Pipe the output into a file
     xsd2codemirror C:\...\ > tags.json
 
