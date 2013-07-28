@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://codemirror.net/demo/xmlcomplete.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>CodeMirror: XML Autocomplete Demo</title>
+    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+    <script src="xsltautocomplete_files/codemirror.js"></script>
+    <script src="xsltautocomplete_files/show-hint.js"></script>
+    <link rel="stylesheet" href="http://codemirror.net/addon/hint/show-hint.css">
+    <script src="xsltautocomplete_files/xml-hint.js"></script>
+    <script src="xsltautocomplete_files/xml.js"></script>
+    <link rel="stylesheet" href="http://codemirror.net/doc/docs.css">
+    <style type="text/css">
+      .CodeMirror { border: 1px solid #eee; }
+    </style>
+  </head>
+  <body>
+    <h1>XSLT Autocomplete demo (CodeMirror)</h1>
+    <p>See <a href="http://codemirror.net/demo/xmlcomplete.html">the original XML autocomplete demo</a> on which this example was based.</p>
+    
+    <p>This demo was created by running <a href="http://q42jaap.github.io/xsd2codemirror/">xsd2codemirror</a> 
+    on the <a href="schema-for-xslt20.xsd">schema-for-xslt20.xsd</a> file
+    (I've modified this file slightly to run, the original can be found here <a href="www.w3.org/2007/schema-for-xslt20.xsd">www.w3.org/2007/schema-for-xslt20.xsd</a>)<br/><br/>
+    Command used to generate <a href="xslt2.json">xslt2.json</a>:
+    <pre>xsd2codemirror.exe -prefix xsl http://www.w3.org/1999/XSL/Transform "C:\...\schema-for-xslt20.xsd" > xslt2.json</pre>
+
+    <form><textarea id="code" name="code"><!-- write some xml below -->
+</textarea></form>
+
+    <p>Press <strong>ctrl-space</strong>, or type a '<' character to
+    activate autocompletion. This demo defines a simple schema that
+    guides completion. The schema can be customized—see
+    the <a href="../doc/manual.html#addon_xml-hint">manual</a>.</p>
+
+    <p>Development of the <code>xml-hint</code> addon was kindly
+    sponsored
+    by <a href="http://www.xperiment.mobi">www.xperiment.mobi</a>.</p>
+
+    <script>
+      // This is almost exactly the output as found in xslt.json, however, I've edited the "!top" list, which
+      // is very hard to get right in every xsd (if you define a top level element and <xs:element ref> it later
+      // the element is a legal top level element, but probably you don't want a <xsl:analyze-string> as your
+      // root node.
+      // I've also altered the xsl:stylesheet children list, because it missed xsl:template as it's most important
+      // child. This is because in the stylesheet for 
+      var tags = {
+        "!top": [
+          "xsl:stylesheet"
+        ],
+        "xsl:declaration": {
+          "attrs": {
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:instruction": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:analyze-string": {
+          "attrs": {
+            "select": null,
+            "regex": null,
+            "flags": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:matching-substring",
+            "xsl:non-matching-substring",
+            "xsl:fallback"
+          ]
+        },
+        "xsl:apply-imports": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:with-param"
+          ]
+        },
+        "xsl:apply-templates": {
+          "attrs": {
+            "select": null,
+            "mode": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:sort",
+            "xsl:with-param"
+          ]
+        },
+        "xsl:attribute": {
+          "attrs": {
+            "name": null,
+            "namespace": null,
+            "select": null,
+            "separator": null,
+            "type": null,
+            "validation": [
+              "strict",
+              "lax",
+              "preserve",
+              "strip"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:attribute-set": {
+          "attrs": {
+            "name": null,
+            "use-attribute-sets": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:attribute"
+          ]
+        },
+        "xsl:call-template": {
+          "attrs": {
+            "name": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:with-param"
+          ]
+        },
+        "xsl:character-map": {
+          "attrs": {
+            "name": null,
+            "use-character-maps": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:output-character"
+          ]
+        },
+        "xsl:choose": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:when",
+            "xsl:otherwise"
+          ]
+        },
+        "xsl:comment": {
+          "attrs": {
+            "select": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:copy": {
+          "attrs": {
+            "copy-namespaces": [
+              "yes",
+              "no"
+            ],
+            "inherit-namespaces": [
+              "yes",
+              "no"
+            ],
+            "use-attribute-sets": null,
+            "type": null,
+            "validation": [
+              "strict",
+              "lax",
+              "preserve",
+              "strip"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:copy-of": {
+          "attrs": {
+            "select": null,
+            "copy-namespaces": [
+              "yes",
+              "no"
+            ],
+            "type": null,
+            "validation": [
+              "strict",
+              "lax",
+              "preserve",
+              "strip"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:document": {
+          "attrs": {
+            "type": null,
+            "validation": [
+              "strict",
+              "lax",
+              "preserve",
+              "strip"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:decimal-format": {
+          "attrs": {
+            "name": null,
+            "decimal-separator": null,
+            "grouping-separator": null,
+            "infinity": null,
+            "minus-sign": null,
+            "NaN": null,
+            "percent": null,
+            "per-mille": null,
+            "zero-digit": null,
+            "digit": null,
+            "pattern-separator": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:element": {
+          "attrs": {
+            "name": null,
+            "namespace": null,
+            "inherit-namespaces": [
+              "yes",
+              "no"
+            ],
+            "use-attribute-sets": null,
+            "type": null,
+            "validation": [
+              "strict",
+              "lax",
+              "preserve",
+              "strip"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:fallback": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:for-each": {
+          "attrs": {
+            "select": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:sort",
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:for-each-group": {
+          "attrs": {
+            "select": null,
+            "group-by": null,
+            "group-adjacent": null,
+            "group-starting-with": null,
+            "group-ending-with": null,
+            "collation": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:sort",
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:function": {
+          "attrs": {
+            "name": null,
+            "override": [
+              "yes",
+              "no"
+            ],
+            "as": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:param",
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:if": {
+          "attrs": {
+            "test": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:import": {
+          "attrs": {
+            "href": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:import-schema": {
+          "attrs": {
+            "namespace": null,
+            "schema-location": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:include": {
+          "attrs": {
+            "href": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:key": {
+          "attrs": {
+            "name": null,
+            "match": null,
+            "use": null,
+            "collation": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:matching-substring": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:message": {
+          "attrs": {
+            "select": null,
+            "terminate": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:namespace": {
+          "attrs": {
+            "name": null,
+            "select": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:namespace-alias": {
+          "attrs": {
+            "stylesheet-prefix": null,
+            "result-prefix": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:next-match": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:with-param",
+            "xsl:fallback"
+          ]
+        },
+        "xsl:non-matching-substring": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:number": {
+          "attrs": {
+            "value": null,
+            "select": null,
+            "level": [
+              "single",
+              "multiple",
+              "any"
+            ],
+            "count": null,
+            "from": null,
+            "format": null,
+            "lang": null,
+            "letter-value": null,
+            "ordinal": null,
+            "grouping-separator": null,
+            "grouping-size": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:otherwise": {
+          "attrs": {
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:output": {
+          "attrs": {
+            "name": null,
+            "method": null,
+            "byte-order-mark": [
+              "yes",
+              "no"
+            ],
+            "cdata-section-elements": null,
+            "doctype-public": null,
+            "doctype-system": null,
+            "encoding": null,
+            "escape-uri-attributes": [
+              "yes",
+              "no"
+            ],
+            "include-content-type": [
+              "yes",
+              "no"
+            ],
+            "indent": [
+              "yes",
+              "no"
+            ],
+            "media-type": null,
+            "normalization-form": null,
+            "omit-xml-declaration": [
+              "yes",
+              "no"
+            ],
+            "standalone": [
+              "yes",
+              "no",
+              "omit"
+            ],
+            "undeclare-prefixes": [
+              "yes",
+              "no"
+            ],
+            "use-character-maps": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:output-character": {
+          "attrs": {
+            "character": null,
+            "string": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:param": {
+          "attrs": {
+            "name": null,
+            "select": null,
+            "as": null,
+            "required": [
+              "yes",
+              "no"
+            ],
+            "tunnel": [
+              "yes",
+              "no"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:perform-sort": {
+          "attrs": {
+            "select": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:sort",
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:preserve-space": {
+          "attrs": {
+            "elements": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:processing-instruction": {
+          "attrs": {
+            "name": null,
+            "select": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:result-document": {
+          "attrs": {
+            "format": null,
+            "href": null,
+            "type": null,
+            "validation": [
+              "strict",
+              "lax",
+              "preserve",
+              "strip"
+            ],
+            "method": null,
+            "byte-order-mark": null,
+            "cdata-section-elements": null,
+            "doctype-public": null,
+            "doctype-system": null,
+            "encoding": null,
+            "escape-uri-attributes": null,
+            "include-content-type": null,
+            "indent": null,
+            "media-type": null,
+            "normalization-form": null,
+            "omit-xml-declaration": null,
+            "standalone": null,
+            "undeclare-prefixes": null,
+            "use-character-maps": null,
+            "output-version": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:sequence": {
+          "attrs": {
+            "select": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:fallback"
+          ]
+        },
+        "xsl:sort": {
+          "attrs": {
+            "select": null,
+            "lang": null,
+            "data-type": null,
+            "order": null,
+            "case-order": null,
+            "collation": null,
+            "stable": [
+              "yes",
+              "no"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:strip-space": {
+          "attrs": {
+            "elements": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:stylesheet": {
+          "attrs": {
+            "id": null,
+            "default-validation": [
+              "preserve",
+              "strip"
+            ],
+            "input-type-annotations": [
+              "preserve",
+              "strip",
+              "unspecified"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:import",
+            "xsl:declaration",
+            "xsl:variable",
+            "xsl:param",
+          "xsl:template"
+          ]
+        },
+        "xsl:template": {
+          "attrs": {
+            "match": null,
+            "priority": null,
+            "mode": null,
+            "name": null,
+            "as": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:param",
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:text": {
+          "attrs": {
+            "disable-output-escaping": [
+              "yes",
+              "no"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          }
+        },
+        "xsl:transform": {
+          "attrs": {
+            "id": null,
+            "default-validation": [
+              "preserve",
+              "strip"
+            ],
+            "input-type-annotations": [
+              "preserve",
+              "strip",
+              "unspecified"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:import",
+            "xsl:declaration",
+            "xsl:variable",
+            "xsl:param"
+          ]
+        },
+        "xsl:value-of": {
+          "attrs": {
+            "select": null,
+            "separator": null,
+            "disable-output-escaping": [
+              "yes",
+              "no"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:variable": {
+          "attrs": {
+            "name": null,
+            "select": null,
+            "as": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:when": {
+          "attrs": {
+            "test": null,
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:with-param": {
+          "attrs": {
+            "name": null,
+            "select": null,
+            "as": null,
+            "tunnel": [
+              "yes",
+              "no"
+            ],
+            "version": null,
+            "default-collation": null,
+            "exclude-result-prefixes": null,
+            "extension-element-prefixes": null,
+            "use-when": null,
+            "xpath-default-namespace": null
+          },
+          "children": [
+            "xsl:variable",
+            "xsl:instruction",
+            "xsl:literal-result-element"
+          ]
+        },
+        "xsl:literal-result-element": {}
+      };
+
+      function completeAfter(cm, pred) {
+        var cur = cm.getCursor();
+        if (!pred || pred()) setTimeout(function() {
+          if (!cm.state.completionActive)
+            CodeMirror.showHint(cm, CodeMirror.hint.xml, {schemaInfo: tags, completeSingle: false});
+        }, 100);
+        return CodeMirror.Pass;
+      }
+
+      function completeIfAfterLt(cm) {
+        return completeAfter(cm, function() {
+          var cur = cm.getCursor();
+          return cm.getRange(CodeMirror.Pos(cur.line, cur.ch - 1), cur) == "<";
+        });
+      }
+
+      function completeIfInTag(cm) {
+        return completeAfter(cm, function() {
+          var tok = cm.getTokenAt(cm.getCursor());
+          if (tok.type == "string" && (!/['"]/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1)) return false;
+          var inner = CodeMirror.innerMode(cm.getMode(), tok.state).state;
+          return inner.tagName;
+        });
+      }
+
+      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        mode: "xml",
+        lineNumbers: true,
+        extraKeys: {
+          "'<'": completeAfter,
+          "'/'": completeIfAfterLt,
+          "' '": completeIfInTag,
+          "'='": completeIfInTag,
+          "Ctrl-Space": function(cm) {
+            CodeMirror.showHint(cm, CodeMirror.hint.xml, {schemaInfo: tags});
+          }
+        }
+      });
+    </script>
+  </body>
+	
+</html>
