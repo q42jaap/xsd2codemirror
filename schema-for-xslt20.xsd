@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- WARNING: THIS IS NOT THE ORIGINAL FILE! IF YOU'RE LOOKING FOR IT, GO TO: http://www.w3.org/2007/schema-for-xslt20.xsd -->
+<!-- 
+	For xsd2codemirror demo purposes:
+      removed import-schema with inline xs:schema just for xsd2codemirror, because it gave problems importing the schema.
+      also removed the imports for http://www.w3.org/2001/XMLSchema and http://www.w3.org/XML/1998/namespace because they slowed things down
+-->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" targetNamespace="http://www.w3.org/1999/XSL/Transform" elementFormDefault="qualified">
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -45,8 +51,6 @@
                 revised xsl:sequence element
                 see http://www.w3.org/Bugs/Public/show_bug.cgi?id=4237         
 
-	2013-07-28: removed import-schema with inline xs:schema just for xsd2codemirror,
-				because it gave problems importing the schema.
   </xs:documentation>
 </xs:annotation>   
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -54,9 +58,12 @@
 <!--
 The declaration of xml:space and xml:lang may need to be commented out because
 of problems processing the schema using various tools
+
+	JT 2013-07-28:
+	For this example for xsd2codemirror, I removed the import for xml.xsd
 -->
 <!--      
-<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
 -->
 <!-- 
     An XSLT stylesheet may contain an in-line schema within an xsl:import-schema element,
@@ -65,9 +72,8 @@ of problems processing the schema using various tools
 	JT 2013-07-28:
 	For this example for xsd2codemirror, I commented out the xs:schema reference in xsl:import-schema.
 -->
-  
 <!-- 
-<xs:import namespace="http://www.w3.org/2001/XMLSchema" schemaLocation="XMLSchema.xsd"/>
+<xs:import namespace="http://www.w3.org/2001/XMLSchema" schemaLocation="http://www.w3.org/2001/XMLSchema.xsd"/>
 -->
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <xs:annotation>
