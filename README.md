@@ -11,7 +11,7 @@ Usage
 =====
 
     Usage:
-    xsd2codemirror.exe [-v] path-to-xsd
+    xsd2codemirror.exe [-v] [-prefix prefix namespace]* path-to-xsd
 
 ProTip™: pipe the output into a file:
 
