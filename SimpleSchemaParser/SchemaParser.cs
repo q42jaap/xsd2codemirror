@@ -111,7 +111,7 @@ namespace SimpleSchemaParser
 
     XmlQualifiedName ParseElement(XmlSchemaElement element, bool isTopLevel = false)
     {
-      log.WriteLine("Found element {0}", element.QualifiedName);
+      log.WriteLine("Found element {0}", GetParticleDesc(element));
 
       if (element.RefName != null && !element.RefName.IsEmpty)
       {
@@ -213,6 +213,10 @@ namespace SimpleSchemaParser
     private string GetParticleDesc(XmlSchemaParticle particle)
     {
       var desc = particle.GetType().Name.Replace("XmlSchema", "");
+      if (particle is XmlSchemaElement)
+      {
+        desc += "(" + ((XmlSchemaElement)particle).QualifiedName + ")";
+      }
       if (particle.SourceUri == null)
       {
         if (particle.Id != null)
@@ -262,15 +266,14 @@ namespace SimpleSchemaParser
     /// <returns>A list of direct children elements references</returns>
     private RecursiveChildren ParseGroupBase(XmlSchemaGroupBase group)
     {
-      log.WriteLine("Parsing group {0}", GetParticleDesc(group));
-
-
       RecursiveChildren result;
       if (groupCache.TryGetValue(group, out result))
       {
+        log.WriteLine("Used cache: {0}", GetParticleDesc(group));
         return result;
       }
 
+      log.WriteLine("Parsing group {0}", GetParticleDesc(group));
       result = new RecursiveChildren(group);
       groupCache.Add(group, result);
       foreach (XmlSchemaParticle particle in group.Items)
