@@ -22,3 +22,4 @@ ProTip™: pipe the output into a file:
 Integration
 ===========
 You can use the SimpleSchemaParser library to integrate this into other software.
+Provided that you run .NET on the server of course!
