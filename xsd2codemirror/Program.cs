@@ -19,10 +19,31 @@ namespace xsd2codemirror
       List<string> argsList = new List<string>(args);
       bool verbose = false;
 
-      if (argsList.Contains("-v"))
+      if (argsList.Contains("-v") || argsList.Contains("-verbose"))
       {
         verbose = true;
-        argsList.RemoveAll(s => s == "-v");
+        argsList.RemoveAll(s => s == "-v" || s == "-verbose");
+      }
+      Dictionary<string, string> namespacePrefixes = new Dictionary<string, string>();
+      int index;
+      while ((index = argsList.IndexOf("-prefix")) != -1)
+      {
+        argsList.RemoveAt(index);
+        if (argsList.Count <= index)
+        {
+          Usage();
+          return;
+        }
+        var prefix = argsList[index];
+        argsList.RemoveAt(index);
+        if (argsList.Count <= index)
+        {
+          Usage();
+          return;
+        }
+        var @namespace = argsList[index];
+        argsList.RemoveAt(index);
+        namespacePrefixes[@namespace] = prefix;
       }
       if (argsList.Count != 1)
       {
@@ -37,8 +58,12 @@ namespace xsd2codemirror
           parser.Logger = new ConsoleLogger();
         parser.Compile();
         var elements = parser.GetXmlElements();
+
         var serializer = new CodeMirrorSchemaInfoSerializer(elements);
         serializer.Pretty = true;
+        foreach (var nsPr in namespacePrefixes) {
+          serializer.SetPrefix(nsPr.Key, nsPr.Value);
+        }
         var json = serializer.ToJsonString();
         Console.WriteLine(json);
       }
